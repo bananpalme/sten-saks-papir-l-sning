@@ -21,6 +21,7 @@ let gotName = 0, gotChoice = 0
 //players arrayet er serverens sted til at holde styr på de to spillere
 let players = []
 
+
 //al snak med klienterne sker på connection
 serverSocket.on('connection', socket => {
     //tjek om der er plads til flere spillere 
@@ -63,16 +64,23 @@ serverSocket.on('connection', socket => {
     })
 
     //lav timer på 10 sekunder
-    let time = 10
+    socket.on('playTime', ()=>{
+        let time = 10
 
-
-    setInterval( ()=>{
-        serverSocket.emit('time', time)
-        time--
-        if(time==0)
-        //stop spillet
-            serverSocket.emit('result', players)
-    }, 1000)
+        const myInterval = setInterval( ()=>{
+            serverSocket.emit('time', time)
+            time--
+            if(time==0){
+                //stop spillet
+                clearInterval(myInterval)
+                let winner = players[0].name
+                if(players[0].points == players[1].points) winner = 'ingen'
+                if(players[0].points < players[1].points) winner = players[1].name
+                serverSocket.emit('result', winner)
+                
+            }
+        }, 1000)
+    })
 
     socket.on('click', ()=>{
 
@@ -107,8 +115,10 @@ serverSocket.on('connection', socket => {
     //håndter 'nyt spil' knap
     socket.on('restart', ()=>{
         console.log('Restarting game, same players ')
-        //sæt valgtæller til 0 (vi har begge spilleres navn) 
-        gotChoice = 0
+        players.map(p =>{
+            p.points = 0
+        })
+        
         //start spil
         serverSocket.emit('play', true)
     })

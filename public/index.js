@@ -36,26 +36,49 @@ function setup(){
       confirm('indtast et navn')
     }
     
-    //start spil
-    clientSocket.on('play', () => {
-      console.log('got play, starting game')
-      shiftPage('#play')
-    })
     
-    //send kliks når palmen klikkes
-    playPicture.mousePressed(()=>{
-      clientSocket.emit('click')
-      console.log('klikker')
-    })
     
-    clientSocket.on('status', players =>{
-      player1Name.html(players[0].name)
-      player1Score.html(players[0].points)
-      player2Name.html(players[1].name)
-      player2Score.html(players[1].points)
-    })
-
   })
+
+  //start spil
+  clientSocket.on('play', () => {
+    console.log('got play, starting game')
+    shiftPage('#play')
+    clientSocket.emit('playTime')
+  })
+  
+  //send kliks når palmen klikkes
+  playPicture.mousePressed(()=>{
+    clientSocket.emit('click')
+    console.log('klikker')
+  })
+
+  clientSocket.on('status', players =>{
+    player1Name.html(players[0].name)
+    player1Score.html(players[0].points + '🍌')
+    player2Name.html(players[1].name)
+    player2Score.html(players[1].points + '🍌')
+  })
+
+  clientSocket.on('time', count =>{
+    timer.html(count)
+    console.log(count)
+  })
+
+  clientSocket.on('result', w => {
+    winner.html(w)
+    console.log('got result, winner is ', w)
+    shiftPage('#result')
+    
+    restartButton.mousePressed(()=>{
+      player1Score.html('0🍌')
+      player2Score.html('0🍌')
+      clientSocket.emit('restart')
+      
+    })
+    
+  })
+
 }
 
 function shiftPage(pageId){

@@ -14,11 +14,12 @@
     height: 100vh;
     padding:1rem;
     overflow:hidden;
-    background:white;
+    background:rgb(225, 230, 225);
     position:fixed;
     left:-100vw;
     transition: ease-in-out .5s;
     display:grid;
+    
 }
 
 .show{
