@@ -73,28 +73,29 @@ serverSocket.on('connection', socket => {
             if(time==0){
                 //stop spillet
                 clearInterval(myInterval)
+                //vi finder vinderen
+                //vi sætter player 1 til at vinde hver gang hvis player 1 har flest klikks eller points
                 let winner = players[0].name
+                //hvis plsyer 1 har samme point som player 2 er der ingen vinder altså kampen er draw
                 if(players[0].points == players[1].points) winner = 'ingen'
+                //hvis player 2 har flere points og kliks end player 1 vinder player 2
                 if(players[0].points < players[1].points) winner = players[1].name
+                //resultatet bliver sendt
                 serverSocket.emit('result', winner)
                 
             }
         }, 1000)
     })
-
+    //hvad der sker når man klikker på palmen
     socket.on('click', ()=>{
-
+        //finder den specifikke klient i players arrayet
         let thisPlayer = players.find( p => p.id == socket.id)
+        //når player 1 så klikker på palmen for vedkommende et point
         thisPlayer.points++
         serverSocket.emit('status', players)
+        //sever viser/sender kliks fra de players
         console.log('modtog klik' + thisPlayer.name, players)
     })
-
-    //modtag kliks fra begge spillere
-    //indsæt resultat i players array
-    //er tiden gået?
-    //beregn resultat
-    //send resultat
 
 
 
@@ -115,6 +116,7 @@ serverSocket.on('connection', socket => {
     //håndter 'nyt spil' knap
     socket.on('restart', ()=>{
         console.log('Restarting game, same players ')
+        //her fjerne vi points fra json og players arreyet
         players.map(p =>{
             p.points = 0
         })

@@ -52,24 +52,24 @@ function setup(){
     clientSocket.emit('click')
     console.log('klikker')
   })
-
+  //her vises navnet på de 2 spillere og deres points/kliks når de klikker på palmen
   clientSocket.on('status', players =>{
     player1Name.html(players[0].name)
     player1Score.html(players[0].points + '🍌')
     player2Name.html(players[1].name)
     player2Score.html(players[1].points + '🍌')
   })
-
+  //her ser klienterne en timer der starter på 10 og går til 0 som bliver opdateret hvert sekund
   clientSocket.on('time', count =>{
     timer.html(count)
     console.log(count)
   })
-
+  // her ser klienterne deres resultat og hvem der har vundet og fået flest kliks
   clientSocket.on('result', w => {
     winner.html(w)
     console.log('got result, winner is ', w)
     shiftPage('#result')
-    
+    //her kan players trykke på restart button og når det sker fjenes deres points biver visuelt sat til 0
     restartButton.mousePressed(()=>{
       player1Score.html('0🍌')
       player2Score.html('0🍌')
